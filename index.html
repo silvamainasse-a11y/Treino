@@ -48,7 +48,7 @@ details.card{background:var(--sf);border:0;border-radius:6px;padding:14px;margin
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 8px}
 .chips span{padding:5px 11px;border:1.5px solid var(--ink);border-radius:6px;font-size:.85rem;font-weight:600}
 .chips .a{background:var(--ink);color:var(--bg);font-weight:700}
-.sl{font-size:.82rem;color:var(--mute);font-weight:700;margin:10px 0 2px}
+.wkb{display:flex;align-items:center;gap:10px;margin:0 0 12px}.wkb div{flex:1;text-align:center;line-height:1.2}.wkb b{display:block;font:700 1.6rem "Barlow Condensed","Arial Narrow",Archivo,sans-serif}.wkb span{color:var(--mute);font-size:.8rem}.wkb button{width:46px;height:46px;border:1.5px solid var(--ink);border-radius:8px;background:none;color:var(--ink);font:700 1.5rem Archivo,sans-serif}.nx{margin:0 0 6px;color:var(--mute);font-size:.86rem}.sl{font-size:.82rem;color:var(--mute);font-weight:700;margin:10px 0 2px}
 .sets{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
 .sets button{width:54px;height:54px;border-radius:8px;border:2px solid var(--ink);background:none;color:var(--ink);font:700 1.5rem "Barlow Condensed","Arial Narrow",Archivo,sans-serif}
 .sets button.done{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
@@ -182,6 +182,38 @@ var DAYS={
 };
 function st(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
 var now=new Date(),dow=now.getDay(),wk=(dow>=1&&dow<=5)?dow:1;
+var PRG={
+"1:sup":{lo:8,hi:12,loads:["Barra 40 kg","Barra 50 kg"]},
+"1:rem":{lo:8,hi:12,loads:["Barra 50 kg"]},
+"1:des":{lo:10,hi:15,loads:["Halteres 15 kg"]},
+"1:tri":{lo:10,hi:15,loads:["Barra 20 kg"]},
+"1:ros":{lo:10,hi:15,loads:["Barra 20 kg"]},
+"2:agf":{lo:8,hi:12,loads:["Barra 30 kg","Barra 40 kg"]},
+"2:bul":{lo:10,hi:12,loads:["Halteres 15 kg"]},
+"2:sub":{lo:10,hi:12,loads:["Halteres 15 kg"]},
+"2:pan":{lo:15,hi:20,loads:["Haltere na mão"]},
+"2:pra":{lo:30,hi:60,step:5,unit:"s",loads:["Peso corporal"]},
+"4:par":{lo:8,hi:12,loads:["Peso corporal"],sfx:" (ou supino no chão)"},
+"4:sch":{lo:8,hi:12,loads:["Barra 40 kg","Barra 50 kg"]},
+"4:r1":{lo:10,hi:15,loads:["Haltere 15 kg"]},
+"4:el":{lo:12,hi:20,loads:["Halteres 10 kg"]},
+"4:cru":{lo:12,hi:20,loads:["Halteres 10 kg"]},
+"4:ros":{lo:10,hi:15,loads:["Barra 20 kg"]},
+"4:tri2":{lo:10,hi:15,loads:["Haltere 15 kg, duas mãos"]},
+"5:sti":{lo:8,hi:12,loads:["Barra 40 kg","Barra 50 kg"]},
+"5:fle":{lo:10,hi:15,loads:["Haltere de 10 a 15 kg entre os pés"]},
+"5:pon":{lo:10,hi:15,loads:["Barra 40 kg","Barra 50 kg"]},
+"5:pan":{lo:15,hi:20,loads:["Haltere na mão"]},
+"5:pra":{lo:30,hi:60,step:5,unit:"s",loads:["Peso corporal"]}
+};
+function calc(p,w){var sp=p.step||1,n=Math.floor((p.hi-p.lo)/sp)+1,i=Math.max(0,w-1),g=Math.floor(i/n),L=p.loads.length;return g>=L?{load:p.loads[L-1],reps:p.hi,max:true}:{load:p.loads[g],reps:p.lo+(i%n)*sp,max:false}}
+function hint(p,w){var a=calc(p,w),b=calc(p,w+1),u=p.unit=="s"?" s":"";if(b.max)return a.max?"Carga máxima do seu material. Para evoluir, desça em 4 s e pare 1 s em baixo.":"Última semana desta progressão. Depois, mantenha a carga e aumente a dificuldade: descida de 4 s e pausa de 1 s.";if(b.load!=a.load)return "Próxima semana: sobe para "+b.load+" e volta a "+b.reps+u+".";return "Próxima semana: "+b.reps+u+"."}
+function mon(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7))}
+function fmt(d){return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
+function pd(t){var a=t.split("-");return new Date(+a[0],a[1]-1,+a[2])}
+function week(){var s0=st("wk0");if(!s0){s0=fmt(mon(new Date()));st("wk0",s0)}var o=parseInt(st("wo")||"0",10)||0;return Math.max(1,Math.round((mon(new Date())-mon(pd(s0)))/604800000)+1+o)}
+var W=week();
+function wkbar(){return '<div class="wkb"><button data-wk="-1" aria-label="Semana anterior">‹</button><div><b>Semana '+W+'</b><span>da progressão de cargas e repetições</span></div><button data-wk="1" aria-label="Próxima semana">›</button></div>'}
 var iso=now.toISOString().slice(0,10),tab="t",day=wk;
 function nav(){
  var n=document.getElementById("nav");
@@ -189,9 +221,11 @@ function nav(){
 }
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
 function treino(){
+ W=week();
  var h='<div class="days">';
  for(var d=1;d<=5;d++)h+='<button data-d="'+d+'" class="'+(day==d?"on":"")+'">'+DAYS[d][0].slice(0,3)+(d==dow?' •':'')+'</button>';
  h+='</div>';
+ h+=wkbar();
  var D=DAYS[day];
  h+='<section class="hero"><h2>'+D[0]+'</h2><p>'+D[1]+(day==dow?', hoje':'')+'</p><div id="prog"></div></section>';
  if(dow==0||dow==6)h+='<div class="note">Hoje é fim de semana: descanso. O próximo treino é segunda.</div>';
@@ -201,8 +235,8 @@ function treino(){
   var k=e[0],p=P[k],x=X[k],id=iso+":"+day+":"+k;
   var saved=parseInt(st("s:"+id)||"0",10);
   var w=st("w:"+k)||"";
-  var u=e[4]||"";
-  h+='<section class="card" data-id="'+id+'"><h3><span class="ix">'+(ix+1)+'</span>'+x[0]+'</h3><div class="chips"><span>'+e[1]+'</span><span class="a">'+e[2]+' x '+e[3]+(u?' por '+u:'')+'</span></div>';
+  var u=e[4]||"",pr=PRG[day+":"+k],cw=pr?calc(pr,W):null,ld=cw?cw.load:e[1],rt=cw?(cw.reps+(pr.unit=="s"?" s":"")+(pr.sfx||"")):e[3];
+  h+='<section class="card" data-id="'+id+'"><h3><span class="ix">'+(ix+1)+'</span>'+x[0]+'</h3><div class="chips"><span>'+ld+'</span><span class="a">'+e[2]+' x '+rt+(u?' por '+u:'')+'</span></div>'+(cw?'<p class="nx">'+hint(pr,W)+'</p>':'');
   var sd=u?[["E","esquerda",parseInt(st("s:"+id+":E")||"0",10)],["D","direita",parseInt(st("s:"+id+":D")||"0",10)]]:[["","",saved]];
   sd.forEach(function(q){
    if(u)h+='<div class="sl">'+u.charAt(0).toUpperCase()+u.slice(1)+' '+q[1]+'</div>';
@@ -211,11 +245,11 @@ function treino(){
    h+='</div>';
   });
   h+='<label>Carga usada (kg) <input inputmode="decimal" data-w="'+k+'" value="'+esc(w)+'"></label>';
-  var tb=/ s$/.test(String(e[3])),nm=(String(e[3]).match(/\d+/)||["8"])[0],rv=st("r:"+k)||(tb?"1":nm),pv=st("q:"+k)||(tb?"45":"4");
+  var tb=/ s$/.test(String(e[3])),nm=(String(e[3]).match(/\d+/)||["8"])[0],rv=st("r:"+k+":"+W)||(tb?"1":(cw?String(cw.reps):nm)),pv=st("q:"+k+":"+W)||(tb?(cw?String(cw.reps):"45"):"4");
   h+='<div class="cfg"><label>Reps <input class="n" inputmode="numeric" data-rp="'+k+'" value="'+esc(rv)+'"></label><label>Seg. por rep <input class="n" inputmode="numeric" data-sp="'+k+'" value="'+esc(pv)+'"></label></div><button class="cta" data-go="'+id+'" data-k="'+k+'" data-m="'+e[2]+'" data-u="'+u+'">▶ Iniciar série ('+(u?Math.min(2*e[2],sd[0][2]+sd[1][2]+1)+'/'+2*e[2]:(saved>=e[2]?e[2]:saved+1)+'/'+e[2])+')</button>';
   h+='<details><summary>Ver execução e efeito no corpo</summary><div class="pair"><figure>'+svg(p[0])+'<figcaption>'+(p[1]?"Início":"Posição")+'</figcaption></figure>'+(p[1]?'<figure>'+svg(p[1])+'<figcaption>Fim</figcaption></figure>':'')+'</div><p class="cue">'+x[1]+'</p><p class="cue"><b>Efeito no corpo:</b> '+EF[k]+'</p><p class="cue"><a href="https://www.google.com/search?tbm=isch&q='+encodeURIComponent(x[0]+' execução correta')+'" target="_blank" rel="noopener">Ver fotos reais</a> · <a href="https://www.youtube.com/results?search_query='+encodeURIComponent(x[0]+' execução correta')+'" target="_blank" rel="noopener">Ver vídeo</a></p></details></section>';
  });
- h+='<button class="clr" data-c="1">Limpar séries de hoje</button>';h+='<div class="note">Progressão: quando fizer todas as séries no topo das repetições, com descida lenta (3 s), passe para a carga seguinte. Pare sempre com 1 a 2 repetições de reserva.</div>';
+ h+='<button class="clr" data-c="1">Limpar séries de hoje</button>';h+='<div class="note">As metas sobem sozinhas a cada semana. Se não conseguir cumprir a meta, use a seta para voltar uma semana. Pare sempre com 1 a 2 repetições de reserva.</div>';
  return h;
 }
 function comer(){return '<h2>Metas diárias</h2><ul><li>Proteína: 120 a 160 g por dia, em 30 a 40 g por refeição.</li><li>Calorias: 250 a 300 kcal acima da manutenção.</li><li>Ganho realista: 0,25 a 0,5 kg por mês. Pese-se uma vez por semana.</li></ul><h2>Ao longo do dia</h2><ul><li><b>Antes do treino:</b> banana, pão com açúcar ou mel, ou leite. Se não tiver, manga, papaia, tâmaras, bolachas simples ou papa fina.</li><li><b>Depois do treino:</b> ovos, peixe, frango ou leite com pão, arroz ou xima.</li><li><b>Almoço:</b> arroz ou xima, 150 g de frango ou peixe, feijão e legumes.</li><li><b>Lanche:</b> iogurte, aveia, banana e 1 colher de pasta de amendoim.</li><li><b>Jantar:</b> batata-doce ou arroz, 150 g de peixe ou carne, salada com abacate.</li><li><b>Antes de dormir:</b> iogurte, leite ou 2 ovos cozidos.</li></ul><h2>Proteína aproximada</h2><ul><li>1 ovo: 6 g</li><li>100 g de frango: 25 a 30 g</li><li>100 g de peixe: 20 a 25 g</li><li>100 g de feijão cozido: 7 a 9 g</li><li>1 copo de leite: 8 g</li><li>2 colheres de pasta de amendoim: 7 g e cerca de 190 kcal</li></ul><div class="note">Evite fritos, gordura e porções grandes antes de treinar. Beba água ao acordar.</div>'}
@@ -229,6 +263,7 @@ document.addEventListener("click",function(ev){
  var b=ev.target.closest("button");if(!b)return;
  if(b.dataset.t){tab=b.dataset.t;draw();window.scrollTo(0,0);}
  else if(b.dataset.d){day=+b.dataset.d;draw();}
+ else if(b.dataset.wk){var n2=+b.dataset.wk;if(n2==0){st("wk0",fmt(mon(new Date())));st("wo","0")}else if(W+n2>=1){st("wo",String((parseInt(st("wo")||"0",10)||0)+n2))}draw()}
  else if(b.dataset.go){startSet(b.dataset.go,b.dataset.k,+b.dataset.m,b.dataset.u)}
  else if(b.dataset.c){DAYS[day][2].forEach(function(e){var b0="s:"+iso+":"+day+":"+e[0];st(b0,"0");st(b0+":E","0");st(b0+":D","0")});draw();}
  else if(b.dataset.n){
@@ -237,7 +272,7 @@ document.addEventListener("click",function(ev){
   b.parentNode.querySelectorAll("button").forEach(function(x){x.classList.toggle("done",+x.dataset.n<=v)});prog();
  }
 });
-document.addEventListener("input",function(ev){var i=ev.target;if(i.dataset&&i.dataset.w)st("w:"+i.dataset.w,i.value);if(i.dataset&&i.dataset.rp)st("r:"+i.dataset.rp,i.value);if(i.dataset&&i.dataset.sp)st("q:"+i.dataset.sp,i.value)});
+document.addEventListener("input",function(ev){var i=ev.target;if(i.dataset&&i.dataset.w)st("w:"+i.dataset.w,i.value);if(i.dataset&&i.dataset.rp)st("r:"+i.dataset.rp+":"+W,i.value);if(i.dataset&&i.dataset.sp)st("q:"+i.dataset.sp+":"+W,i.value)});
 var rest=parseInt(st("tt")||"90",10),left=rest,tm=null,running=false,paused=false,fin=false,mode="rest",lab="Descanso",cur=null,auto=st("au")!=="0",snd=st("so")!=="0",ac=null;
 function beep(f,d){if(!snd)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.25;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
 function vib(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
