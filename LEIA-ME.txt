@@ -1,0 +1,7 @@
+MEU PLANO DE TREINO (app instalável)
+
+Conteúdo: index.html (a app), manifest.webmanifest, sw.js e os ícones.
+Publique esta pasta (ou este ZIP) num site gratuito, por exemplo https://app.netlify.com/drop
+Depois abra o endereço no Chrome do telemóvel e escolha "Instalar app" ou "Adicionar ao ecrã inicial".
+
+Para atualizar o plano: troque os ficheiros e, no sw.js, mude "treino-v1" para "treino-v2".
