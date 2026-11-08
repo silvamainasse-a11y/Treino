@@ -277,7 +277,7 @@ document.getElementById("bar").addEventListener("click",function(ev){var b=ev.ta
  else if(b.id=="so"){snd=!snd;st("so",snd?"1":"0");tg();if(snd)beep(700,.1)}});
 tg();show();prog();
 draw();
-if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(function(r){r.update()}).catch(function(){});var rl=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(!rl){rl=true;location.reload()}})})}
 </script>
 </body>
 </html>
