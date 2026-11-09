@@ -48,7 +48,7 @@ details.card{background:var(--sf);border:0;border-radius:6px;padding:14px;margin
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 8px}
 .chips span{padding:5px 11px;border:1.5px solid var(--ink);border-radius:6px;font-size:.85rem;font-weight:600}
 .chips .a{background:var(--ink);color:var(--bg);font-weight:700}
-.wkb{display:flex;align-items:center;gap:10px;margin:0 0 12px}.wkb div{flex:1;text-align:center;line-height:1.2}.wkb b{display:block;font:700 1.6rem "Barlow Condensed","Arial Narrow",Archivo,sans-serif}.wkb span{color:var(--mute);font-size:.8rem}.wkb button{width:46px;height:46px;border:1.5px solid var(--ink);border-radius:8px;background:none;color:var(--ink);font:700 1.5rem Archivo,sans-serif}.nx{margin:0 0 6px;color:var(--mute);font-size:.86rem}.sl{font-size:.82rem;color:var(--mute);font-weight:700;margin:10px 0 2px}
+.wkb{display:flex;align-items:center;gap:10px;margin:0 0 12px}.wkb div{flex:1;text-align:center;line-height:1.2}.wkb b{display:block;font:700 1.6rem "Barlow Condensed","Arial Narrow",Archivo,sans-serif}.wkb span{color:var(--mute);font-size:.8rem}.wkb button{width:46px;height:46px;border:1.5px solid var(--ink);border-radius:8px;background:none;color:var(--ink);font:700 1.5rem Archivo,sans-serif}.wbar{height:12px;border-radius:99px;background:rgba(127,127,127,.4);overflow:hidden;margin:14px 0 8px}.wbar i{display:block;height:100%;background:var(--onslab);border-radius:99px;transition:width .3s}.wl{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}.wl button{padding:14px 6px;border:1.5px solid var(--ink);border-radius:8px;background:none;color:var(--ink);font-weight:800;font-size:.98rem}select{width:100%;padding:13px;margin-top:8px;border:1.5px solid var(--ink);border-radius:8px;background:var(--sf);color:var(--ink);font-size:1rem}nav button{font-size:.9rem!important}.nx{margin:0 0 6px;color:var(--mute);font-size:.86rem}.sl{font-size:.82rem;color:var(--mute);font-weight:700;margin:10px 0 2px}
 .sets{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
 .sets button{width:54px;height:54px;border-radius:8px;border:2px solid var(--ink);background:none;color:var(--ink);font:700 1.5rem "Barlow Condensed","Arial Narrow",Archivo,sans-serif}
 .sets button.done{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
@@ -217,7 +217,7 @@ function wkbar(){return '<div class="wkb"><button data-wk="-1" aria-label="Seman
 var iso=now.toISOString().slice(0,10),tab="t",day=wk;
 function nav(){
  var n=document.getElementById("nav");
- n.innerHTML=[["t","Treino"],["c","Comer"],["s","Segurança"]].map(function(x){return '<button data-t="'+x[0]+'" class="'+(tab==x[0]?"on":"")+'">'+x[1]+'</button>'}).join("");
+ n.innerHTML=[["t","Treino"],["c","Comer"],["a","Água"],["s","Segurança"]].map(function(x){return '<button data-t="'+x[0]+'" class="'+(tab==x[0]?"on":"")+'">'+x[1]+'</button>'}).join("");
 }
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
 function treino(){
@@ -254,16 +254,55 @@ function treino(){
 }
 function comer(){return '<h2>Metas diárias</h2><ul><li>Proteína: 120 a 160 g por dia, em 30 a 40 g por refeição.</li><li>Calorias: 250 a 300 kcal acima da manutenção.</li><li>Ganho realista: 0,25 a 0,5 kg por mês. Pese-se uma vez por semana.</li></ul><h2>Ao longo do dia</h2><ul><li><b>Antes do treino:</b> banana, pão com açúcar ou mel, ou leite. Se não tiver, manga, papaia, tâmaras, bolachas simples ou papa fina.</li><li><b>Depois do treino:</b> ovos, peixe, frango ou leite com pão, arroz ou xima.</li><li><b>Almoço:</b> arroz ou xima, 150 g de frango ou peixe, feijão e legumes.</li><li><b>Lanche:</b> iogurte, aveia, banana e 1 colher de pasta de amendoim.</li><li><b>Jantar:</b> batata-doce ou arroz, 150 g de peixe ou carne, salada com abacate.</li><li><b>Antes de dormir:</b> iogurte, leite ou 2 ovos cozidos.</li></ul><h2>Proteína aproximada</h2><ul><li>1 ovo: 6 g</li><li>100 g de frango: 25 a 30 g</li><li>100 g de peixe: 20 a 25 g</li><li>100 g de feijão cozido: 7 a 9 g</li><li>1 copo de leite: 8 g</li><li>2 colheres de pasta de amendoim: 7 g e cerca de 190 kcal</li></ul><div class="note">Evite fritos, gordura e porções grandes antes de treinar. Beba água ao acordar.</div>'}
 function seg(){return '<h2>Antes de cada treino</h2><ul><li>Procure rachaduras nos discos, nas pontas dos halteres e na barra.</li><li>Confirme que os discos estão travados e com carga igual dos dois lados.</li><li>Disco com fenda que atravessa a peça deve ser trocado, não remendado.</li><li>Verifique se o banco e o suporte da barra estão firmes.</li></ul><h2>Durante o treino</h2><ul><li>No supino e desenvolvimento, pare sempre com 1 a 2 repetições de reserva.</li><li>Sem ajudante, use apoios de segurança na altura certa.</li><li>Desça sempre com controlo (3 segundos).</li><li>Descanse 2 min nos exercícios pesados e 1 a 1,5 min nos de isolamento.</li></ul><h2>Pesos de cimento</h2><ul><li>Pese cada peça e escreva o peso nela.</li><li>Aguarde 14 dias de cura antes de usar uma peça nova, e 28 para cargas altas.</li></ul>'}
+var CID=[["Maputo",-25.97,32.57],["Matola",-25.96,32.46],["Xai-Xai",-25.05,33.64],["Inhambane",-23.87,35.38],["Beira",-19.84,34.84],["Chimoio",-19.12,33.48],["Tete",-16.16,33.59],["Quelimane",-17.88,36.89],["Nampula",-15.12,39.27],["Pemba",-12.97,40.52],["Lichinga",-13.31,35.24]];
+var WX=null,wmsg="";try{WX=JSON.parse(st("wx")||"null")}catch(e){}
+function nivel(f){return f<18?"Frio":f<25?"Ameno":f<32?"Quente":"Muito quente"}
+function rec(f,hm,tr,kg){var a=f>=40?1.3:f>=35?1:f>=30?.6:f>=25?.3:0;if(hm>=70&&f>=28)a+=.2;return Math.min(5,Math.round((kg*.035+a+(tr?.7:0))*10)/10)}
+function lt(x){return String(x).replace(".",",")}
+function zd(d){return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+function trn(d){return d>=1&&d<=5&&DAYS[d][2].length>0}
+function getWx(){var pl=null;try{pl=JSON.parse(st("pl")||"null")}catch(e){}if(!pl)return;
+ fetch("https://api.open-meteo.com/v1/forecast?latitude="+pl.lat+"&longitude="+pl.lon+"&current=temperature_2m,relative_humidity_2m,apparent_temperature&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max&forecast_days=3&timezone=auto").then(function(r){return r.json()}).then(function(j){
+  WX={ts:Date.now(),t:j.current.temperature_2m,h:j.current.relative_humidity_2m,dates:j.daily.time,tmax:j.daily.temperature_2m_max,apm:j.daily.apparent_temperature_max};
+  st("wx",JSON.stringify(WX));if(tab=="a")draw()}).catch(function(){})}
+function agua(){
+ var kg=parseFloat(st("kg"))||74,pl=null;try{pl=JSON.parse(st("pl")||"null")}catch(e){}
+ var man=st("wm"),f=null,hm=60,info="",nx="",i=-1;
+ if(WX&&pl){i=WX.dates.indexOf(zd(new Date()));var old=i<0;if(old)i=0;f=WX.apm[i];hm=WX.h;
+  info=pl.name+": agora "+Math.round(WX.t)+" °C, máxima de hoje "+Math.round(WX.tmax[i])+" °C, sensação térmica "+Math.round(f)+" °C, humidade "+Math.round(WX.h)+"%."+(old||Date.now()-WX.ts>21600000?" Previsão guardada, sem ligação à internet.":"");
+  if(WX.apm[i+1]!==undefined&&!old){var f2=WX.apm[i+1],d2=(dow+1)%7;nx="Amanhã: sensação de "+Math.round(f2)+" °C, "+nivel(f2).toLowerCase()+". Meta de "+lt(rec(f2,hm,trn(d2),kg))+" L."}}
+ else if(man){f=+man;info="Clima escolhido por si: "+nivel(f).toLowerCase()+"."}
+ var h='';
+ if(f===null){
+  h+='<h2>Água</h2><div class="card"><p>Para ajustar a água ao clima, escolha o local.'+(pl?' A previsão ainda não chegou: confirme a internet ou escolha o clima de hoje.':'')+'</p>'+(wmsg?'<p class="nx">'+wmsg+'</p>':'')+'<button class="cta" data-geo="1">Usar a minha localização</button><select id="cid" aria-label="Cidade"><option value="">Ou escolha a cidade</option>'+CID.map(function(c,k){return '<option value="'+k+'">'+c[0]+'</option>'}).join("")+'</select></div>';
+  h+='<div class="card"><p>Sem previsão? Diga como está o dia hoje:</p><div class="wl"><button data-wm="12">Frio</button><button data-wm="22">Ameno</button><button data-wm="30">Quente</button><button data-wm="36">Muito quente</button></div></div>';
+  wmsg="";return h}
+ var tr=trn(dow),tot=rec(f,hm,tr,kg),got=parseInt(st("wl:"+zd(new Date()))||"0",10),pc=Math.min(100,Math.round(got/(tot*10)));
+ h+='<section class="hero"><h2>'+lt(tot)+' L</h2><p>Meta de água hoje: '+nivel(f).toLowerCase()+(tr?', dia de treino':', dia sem treino')+'</p><div class="wbar"><i style="width:'+pc+'%"></i></div><p class="cnt"><b>'+lt(Math.round(got/100)/10)+'</b> de '+lt(tot)+' L, cerca de '+Math.ceil(tot/.25)+' copos de 250 ml</p></section>';
+ h+='<div class="wl"><button data-w2="200">+200 ml</button><button data-w2="300">+300 ml</button><button data-w2="500">+500 ml</button><button data-w2="-200">Desfazer 200 ml</button></div>';
+ h+='<p class="nx">'+info+'</p>'+(nx?'<p class="nx"><b>'+nx+'</b></p>':'');
+ var tip=f<18?"Dia frio: a sede diminui, mas o corpo continua a perder água. Beba aos poucos mesmo sem sede. Chás sem açúcar e sopas contam.":f<25?"Clima ameno: siga a meta e beba junto às refeições.":f<32?"Dia quente: beba um copo a cada hora e leve água para o trabalho. Fruta e sopa também ajudam.":"Dia muito quente: reponha água aos poucos e evite esforço ao sol. Se suar muito, junte uma pitada de sal ou sais de reidratação. Tontura, dor de cabeça forte ou urina escura: pare e descanse à sombra.";
+ h+='<div class="note">'+tip+'</div>';
+ if(tr)h+='<details class="card" open><summary>Como repartir hoje</summary><ul><li>Ao acordar: 300 a 400 ml.</li><li>Durante o treino: 150 a 250 ml a cada 15 a 20 minutos, cerca de 500 a 700 ml.</li><li>Depois do treino: 500 ml.</li><li>O resto, ao longo do dia, aos poucos.</li></ul></details>';
+ h+='<details class="card"><summary>Ajustes e segurança</summary><p><label>Peso (kg) <input class="n" inputmode="decimal" data-kg="1" value="'+kg+'"></label></p><p>A base é 35 ml por kg de peso, mais o calor e o treino. Conta toda a bebida, incluindo chás e sopas. Não passe de cerca de 1 litro por hora. Com problemas nos rins ou no coração, ou se toma medicação que mexa nos líquidos, confirme a meta com o médico.</p><button class="clr" data-pl="1">Mudar o local</button>'+(man&&!(WX&&pl)?' <button class="clr" data-wmc="1">Apagar o clima escolhido</button>':'')+'</details>';
+ return h}
+try{var pl0=JSON.parse(st("pl")||"null");if(pl0&&(!WX||Date.now()-WX.ts>10800000))getWx()}catch(e){}
 function draw(){
  nav();
- document.getElementById("app").innerHTML=tab=="t"?treino():'<div class="card">'+(tab=="c"?comer():seg())+'</div>';
+ document.getElementById("app").innerHTML=tab=="t"?treino():tab=="a"?agua():'<div class="card">'+(tab=="c"?comer():seg())+'</div>';
  if(typeof prog=="function")prog();
+ var br=document.getElementById("bar");if(br)br.style.display=(tab=="t"||running)?"":"none";
 }
 document.addEventListener("click",function(ev){
  var b=ev.target.closest("button");if(!b)return;
  if(b.dataset.t){tab=b.dataset.t;draw();window.scrollTo(0,0);}
  else if(b.dataset.d){day=+b.dataset.d;draw();}
  else if(b.dataset.wk){var n2=+b.dataset.wk;if(n2==0){st("wk0",fmt(mon(new Date())));st("wo","0")}else if(W+n2>=1){st("wo",String((parseInt(st("wo")||"0",10)||0)+n2))}draw()}
+ else if(b.dataset.w2){var k0="wl:"+zd(new Date());st(k0,String(Math.max(0,(parseInt(st(k0)||"0",10)||0)+(+b.dataset.w2))));draw()}
+ else if(b.dataset.wm){st("wm",b.dataset.wm);draw()}
+ else if(b.dataset.wmc){st("wm","");draw()}
+ else if(b.dataset.pl){st("pl","");st("wx","");WX=null;draw()}
+ else if(b.dataset.geo){if(!navigator.geolocation){wmsg="O navegador não permite localização. Escolha a cidade.";draw();return}navigator.geolocation.getCurrentPosition(function(p){st("pl",JSON.stringify({lat:+p.coords.latitude.toFixed(2),lon:+p.coords.longitude.toFixed(2),name:"A sua localização"}));getWx();draw()},function(){wmsg="Não consegui a localização. Escolha a cidade na lista.";draw()},{timeout:10000})}
  else if(b.dataset.go){startSet(b.dataset.go,b.dataset.k,+b.dataset.m,b.dataset.u)}
  else if(b.dataset.c){DAYS[day][2].forEach(function(e){var b0="s:"+iso+":"+day+":"+e[0];st(b0,"0");st(b0+":E","0");st(b0+":D","0")});draw();}
  else if(b.dataset.n){
@@ -272,6 +311,7 @@ document.addEventListener("click",function(ev){
   b.parentNode.querySelectorAll("button").forEach(function(x){x.classList.toggle("done",+x.dataset.n<=v)});prog();
  }
 });
+document.addEventListener("change",function(ev){var t=ev.target;if(t.id=="cid"&&t.value!==""){var c=CID[+t.value];st("pl",JSON.stringify({lat:c[1],lon:c[2],name:c[0]}));st("wm","");getWx();draw()}else if(t.dataset&&t.dataset.kg){st("kg",t.value);draw()}});
 document.addEventListener("input",function(ev){var i=ev.target;if(i.dataset&&i.dataset.w)st("w:"+i.dataset.w,i.value);if(i.dataset&&i.dataset.rp)st("r:"+i.dataset.rp+":"+W,i.value);if(i.dataset&&i.dataset.sp)st("q:"+i.dataset.sp+":"+W,i.value)});
 var rest=parseInt(st("tt")||"90",10),left=rest,tm=null,running=false,paused=false,fin=false,mode="rest",lab="Descanso",cur=null,auto=st("au")!=="0",snd=st("so")!=="0",ac=null;
 function beep(f,d){if(!snd)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.25;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}

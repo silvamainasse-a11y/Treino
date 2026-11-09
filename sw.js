@@ -1,4 +1,4 @@
-var V="treino-v4";
+var V="treino-v5";
 var FILES=["./","./index.html","./manifest.webmanifest","./icon-192.png","./icon-512.png","./icon-maskable-512.png","./apple-touch-icon.png"];
 self.addEventListener("install",function(e){
  e.waitUntil(caches.open(V).then(function(c){
