@@ -206,8 +206,8 @@ var PRG={
 "5:pan":{lo:15,hi:20,loads:["Haltere na mão"]},
 "5:pra":{lo:30,hi:60,step:5,unit:"s",loads:["Peso corporal"]}
 };
-function calc(p,w){var sp=p.step||1,n=Math.floor((p.hi-p.lo)/sp)+1,i=Math.max(0,w-1),g=Math.floor(i/n),L=p.loads.length;return g>=L?{load:p.loads[L-1],reps:p.hi,max:true}:{load:p.loads[g],reps:p.lo+(i%n)*sp,max:false}}
-function hint(p,w){var a=calc(p,w),b=calc(p,w+1),u=p.unit=="s"?" s":"";if(b.max)return a.max?"Carga máxima do seu material. Para evoluir, desça em 4 s e pare 1 s em baixo.":"Última semana desta progressão. Depois, mantenha a carga e aumente a dificuldade: descida de 4 s e pausa de 1 s.";if(b.load!=a.load)return "Próxima semana: sobe para "+b.load+" e volta a "+b.reps+u+".";return "Próxima semana: "+b.reps+u+"."}
+function calc(p,w){var sp=p.step||1,n=Math.floor((p.hi-p.lo)/sp)+1,i=Math.max(0,w-1),g=Math.floor(i/n),L=p.loads.length,sh=p.sh===undefined?4:p.sh;if(g>=L){g=L-1;return{load:p.loads[g],reps:p.hi-sh*g,max:true}}return{load:p.loads[g],reps:p.lo-sh*g+(i%n)*sp,max:false}}
+function hint(p,w){var a=calc(p,w),b=calc(p,w+1),u=p.unit=="s"?" s":"";if(b.max)return a.max?"Carga máxima do seu material. Para evoluir, desça em 4 s e pare 1 s em baixo.":"Última semana desta progressão. Depois, mantenha a carga e aumente a dificuldade: descida de 4 s e pausa de 1 s.";if(b.load!=a.load)return "Próxima semana: sobe para "+b.load+" e as repetições baixam para "+b.reps+u+", porque a carga é maior.";return "Próxima semana: "+b.reps+u+"."}
 function mon(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7))}
 function fmt(d){return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
 function pd(t){var a=t.split("-");return new Date(+a[0],a[1]-1,+a[2])}
@@ -246,7 +246,7 @@ function treino(){
   });
   h+='<label>Carga usada (kg) <input inputmode="decimal" data-w="'+k+'" value="'+esc(w)+'"></label>';
   var tb=/ s$/.test(String(e[3])),nm=(String(e[3]).match(/\d+/)||["8"])[0],rv=st("r:"+k+":"+W)||(tb?"1":(cw?String(cw.reps):nm)),pv=st("q:"+k+":"+W)||(tb?(cw?String(cw.reps):"45"):"4");
-  h+='<div class="cfg"><label>Reps <input class="n" inputmode="numeric" data-rp="'+k+'" value="'+esc(rv)+'"></label><label>Seg. por rep <input class="n" inputmode="numeric" data-sp="'+k+'" value="'+esc(pv)+'"></label></div><button class="cta" data-go="'+id+'" data-k="'+k+'" data-m="'+e[2]+'" data-u="'+u+'">▶ Iniciar série ('+(u?Math.min(2*e[2],sd[0][2]+sd[1][2]+1)+'/'+2*e[2]:(saved>=e[2]?e[2]:saved+1)+'/'+e[2])+')</button>';
+  h+='<div class="cfg"><label>Reps <input class="n" inputmode="numeric" data-rp="'+k+'" value="'+esc(rv)+'"></label><label>Seg. por rep <input class="n" inputmode="numeric" data-sp="'+k+'" value="'+esc(pv)+'"></label>'+(u?'<label>Troca de lado (s) <input class="n" inputmode="numeric" data-tp="'+k+'" value="'+esc(st("t:"+k)||"60")+'"></label>':'')+'</div><button class="cta" data-go="'+id+'" data-k="'+k+'" data-m="'+e[2]+'" data-u="'+u+'">▶ Iniciar série ('+(u?Math.min(2*e[2],sd[0][2]+sd[1][2]+1)+'/'+2*e[2]:(saved>=e[2]?e[2]:saved+1)+'/'+e[2])+')</button>';
   h+='<details><summary>Ver execução e efeito no corpo</summary><div class="pair"><figure>'+svg(p[0])+'<figcaption>'+(p[1]?"Início":"Posição")+'</figcaption></figure>'+(p[1]?'<figure>'+svg(p[1])+'<figcaption>Fim</figcaption></figure>':'')+'</div><p class="cue">'+x[1]+'</p><p class="cue"><b>Efeito no corpo:</b> '+EF[k]+'</p><p class="cue"><a href="https://www.google.com/search?tbm=isch&q='+encodeURIComponent(x[0]+' execução correta')+'" target="_blank" rel="noopener">Ver fotos reais</a> · <a href="https://www.youtube.com/results?search_query='+encodeURIComponent(x[0]+' execução correta')+'" target="_blank" rel="noopener">Ver vídeo</a></p></details></section>';
  });
  h+='<button class="clr" data-c="1">Limpar séries de hoje</button>';h+='<div class="note">As metas sobem sozinhas a cada semana. Se não conseguir cumprir a meta, use a seta para voltar uma semana. Pare sempre com 1 a 2 repetições de reserva.</div>';
@@ -312,7 +312,7 @@ document.addEventListener("click",function(ev){
  }
 });
 document.addEventListener("change",function(ev){var t=ev.target;if(t.id=="cid"&&t.value!==""){var c=CID[+t.value];st("pl",JSON.stringify({lat:c[1],lon:c[2],name:c[0]}));st("wm","");getWx();draw()}else if(t.dataset&&t.dataset.kg){st("kg",t.value);draw()}});
-document.addEventListener("input",function(ev){var i=ev.target;if(i.dataset&&i.dataset.w)st("w:"+i.dataset.w,i.value);if(i.dataset&&i.dataset.rp)st("r:"+i.dataset.rp+":"+W,i.value);if(i.dataset&&i.dataset.sp)st("q:"+i.dataset.sp+":"+W,i.value)});
+document.addEventListener("input",function(ev){var i=ev.target;if(i.dataset&&i.dataset.w)st("w:"+i.dataset.w,i.value);if(i.dataset&&i.dataset.rp)st("r:"+i.dataset.rp+":"+W,i.value);if(i.dataset&&i.dataset.sp)st("q:"+i.dataset.sp+":"+W,i.value);if(i.dataset&&i.dataset.tp)st("t:"+i.dataset.tp,i.value)});
 var rest=parseInt(st("tt")||"90",10),left=rest,tm=null,running=false,paused=false,fin=false,mode="rest",lab="Descanso",cur=null,auto=st("au")!=="0",snd=st("so")!=="0",ac=null;
 function beep(f,d){if(!snd)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.25;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
 function vib(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
@@ -328,15 +328,15 @@ function tick(){
  else if(mode=="prep"){if(left>0&&left<=3)beep(880,.12);if(left<=0){beep(1000,.3);vib(200);mode="set";left=cur.tot;lab=cur.lab(1)}}
  else{var el=cur.tot-left;if(cur.reps>1&&left>0&&el%cur.per==0){beep(900,.08);lab=cur.lab(el/cur.per+1)}if(left<=0){markDone();var sw=false;
   if(cur.uni){var o=cur.side=="E"?"D":"E",a1=parseInt(st("s:"+cur.base+":"+cur.side)||"0",10),b1=parseInt(st("s:"+cur.base+":"+o)||"0",10);
-   if(a1>b1&&b1<cur.m){sw=true;cur=mkCur(cur.base,cur.k,cur.m,true,cur.unit,o,cur.reps,cur.per);beep(660,.3);vib(300);run("prep",10,"Troque de "+cur.unit+": agora "+(o=="E"?"esquerda":"direita"))}}
+   if(a1>b1&&b1<cur.m){sw=true;cur=mkCur(cur.base,cur.k,cur.m,true,cur.unit,o,cur.reps,cur.per,cur.sw);beep(660,.3);vib(300);run("prep",cur.sw,"Troque de "+cur.unit+": agora "+(o=="E"?"esquerda":"direita"))}}
   if(!sw){if(auto){beep(660,.3);vib(300);doRest()}else endAll("Série concluída")}}}
  show()}
-function mkCur(base,k,m,uni,unit,side,r,q){var id=uni?base+":"+side:base,d=parseInt(st("s:"+id)||"0",10);return {base:base,id:id,k:k,m:m,uni:uni,unit:unit,side:side,reps:r,per:q,tot:r*q,n:d+1,lab:function(n){return "Série "+this.n+"/"+this.m+(this.uni?" · "+this.unit+" "+(this.side=="E"?"esquerda":"direita"):"")+(this.reps>1?" · rep "+n+"/"+this.reps:" · segure")}}}
+function mkCur(base,k,m,uni,unit,side,r,q,sw){var id=uni?base+":"+side:base,d=parseInt(st("s:"+id)||"0",10);return {base:base,id:id,k:k,m:m,uni:uni,unit:unit,side:side,reps:r,per:q,sw:sw||60,tot:r*q,n:d+1,lab:function(n){return "Série "+this.n+"/"+this.m+(this.uni?" · "+this.unit+" "+(this.side=="E"?"esquerda":"direita"):"")+(this.reps>1?" · rep "+n+"/"+this.reps:" · segure")}}}
 function startSet(id,k,m,unit){
  var r=Math.max(1,parseInt((document.querySelector('[data-rp="'+k+'"]')||{}).value,10)||8),q=Math.max(1,parseInt((document.querySelector('[data-sp="'+k+'"]')||{}).value,10)||4),uni=!!unit,side="";
  if(uni){var dE=parseInt(st("s:"+id+":E")||"0",10),dD=parseInt(st("s:"+id+":D")||"0",10);side=dE>dD?"D":"E";if((side=="E"?dE:dD)>=m)side=side=="E"?"D":"E";if((side=="E"?dE:dD)>=m){stop();lab="Todas as séries feitas";show();return}}
  else if(parseInt(st("s:"+id)||"0",10)>=m){stop();lab="Todas as séries feitas";show();return}
- cur=mkCur(id,k,m,uni,unit,side,r,q);
+ var tw=Math.max(10,parseInt((document.querySelector('[data-tp="'+k+'"]')||{}).value,10)||60);cur=mkCur(id,k,m,uni,unit,side,r,q,tw);
  beep(1000,.12);run("prep",5,"Prepare-se"+(uni?": "+unit+" "+(side=="E"?"esquerda":"direita"):""))}
 function tg(){document.getElementById("au").textContent="Auto: "+(auto?"sim":"não");document.getElementById("so").textContent="Som: "+(snd?"sim":"não")}
 function prog(){var D=DAYS[day][2],t=0,d=0;D.forEach(function(e){var b0="s:"+iso+":"+day+":"+e[0];if(e[4]){t+=2*e[2];d+=Math.min(e[2],parseInt(st(b0+":E")||"0",10))+Math.min(e[2],parseInt(st(b0+":D")||"0",10))}else{t+=e[2];d+=Math.min(e[2],parseInt(st(b0)||"0",10))}});var el=document.getElementById("prog");if(!el||!t)return;
